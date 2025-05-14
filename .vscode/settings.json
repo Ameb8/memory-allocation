@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "combos.h": "c",
+        "list.h": "c"
+    }
+}

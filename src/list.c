@@ -5,35 +5,56 @@
 #include "../include/list.h"
 #include "../include/combos.h"
 
-typedef struct {
-    Combo* combo;
+typedef struct ListNode {
+    int* blocks;
     struct ListNode* next;
 } ListNode;
 
-typedef struct {
+typedef struct ListIt {
     ListNode* node;
 } ListIt;
 
-typedef struct {
+typedef struct List {
     ListNode* head;
+    int size;
 } List;
 
 List* list_create() {
-    List *list = malloc(sizeof(List));
-    list->head = NULL;
+    List *list = calloc(1, sizeof(List));
 
     return list;
 }
 
-void list_add(List* list, Combo* combo) {
+void list_add(List* list, int* blocks) {
     if(!list) return;
-    if(!combo) return;
-    
+    if(!blocks) return;
+
+    list->size++;
     ListNode* node = malloc(sizeof(ListNode));
-    node->combo = combo;
+    node->blocks = blocks;
 
     node->next = list->head;
     list->head = node;
+} 
+
+void list_increment(List* list, int* blocks) {
+    if(!list || !blocks)
+        return;
+
+    ListNode* temp = list->head;
+
+    while(temp) {
+        if(temp->blocks[0] = blocks[0]) {
+            temp->blocks[1] += blocks[1];
+            return;
+        }
+    }
+
+    list_add(list, blocks);
+}
+
+int list_size(List* list) {
+    return list->size;
 }
 
 void list_free(List *list) {
@@ -44,7 +65,7 @@ void list_free(List *list) {
     while(current) {
         ListNode* temp = current;
         current = current->next;
-        free(temp->combo);
+        free(temp->blocks);
         free(temp);
     }
 
@@ -71,12 +92,13 @@ bool list_it_has_next(ListIt* list_it) {
     return true;
 }
 
-Combo* list_it_next(ListIt* list_it) {
+int* list_it_next(ListIt* list_it) {
     if(!list_it)
         return NULL;
 
-    Combo* c = list_it->node->combo;
+    int* blocks = list_it->node->blocks;
     list_it->node = list_it->node->next;
 
-    return c;
+    return blocks;
 }
+
