@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "../include/list.h"
 #include "../include/combos.h"
+#include "../include/tree.h"
 
 typedef struct {
     int num_blocks;
@@ -20,10 +21,11 @@ typedef struct {
 } Tree;
 
 typedef struct {
-    TreeNode* current;
+    Tree* tree;
+    Combo* current;
     ListIt* list;
-    Combo* stack;
-    int size;
+    TreeNode** stack;
+    int stack_size;
 } TreeIt;
 
 Tree* tree_create() {
@@ -78,25 +80,66 @@ void tree_insert(Tree* tree, Combo* c) {
     node_insert(tree->root, num_blocks, c, 1, &tree->height);
 }
 
+TreeNode* pop(TreeIt* tree_it) {
+    if(!tree_it || tree_it->stack_size < 0)
+        return NULL;
+
+    return tree_it->stack[tree_it->stack_size--];
+}
+
 void push_left(TreeIt* tree_it, TreeNode* node) {
     TreeNode* temp = node->left;
 
-    while(temp) {
-        tree_it->stack[(*tree->size)++] = temp->
-    }
+    while(temp)
+        tree_it->stack[tree_it->stack_size++] = temp;
 }
 
+/*
+    Tree* tree;
+    TreeNode* current;
+    ListIt* list;
+    Combo* stack;
+    int stack_size;
+*/
+
+
 TreeIt* tree_it_create(Tree* tree) {
-    Combo* stack[tree->height];
-    int size = 0;
+    if(!tree) return NULL;
+    if(!tree->root) return NULL;
 
+    TreeIt* tree_it = malloc(sizeof(TreeIt));
+    tree_it->tree = tree;
 
+    TreeNode* stack[tree->height];
+    tree_it->stack_size = 0;
+    push_left(tree_it, tree->root);
+
+    TreeNode* node = tree_it->stack[tree_it->stack_size--];
+    tree_it->list = list_it_create(node->combos);
+    tree_it->current = list_it_next(tree_it->list);
 }
 
 bool tree_it_has_next(TreeIt* tree_it) {
+    if(!tree_it || !tree_it->current)
+        return false;
 
+    return true;
 }
 
-bool tree_it_next(TreeIt* tree_it) {
+Combo* tree_it_next(TreeIt* tree_it) {
+    if(!tree_it || tree_it->current) return NULL;
+    Combo* ret = tree_it->current;
 
+    if(list_it_has_next(tree_it->list)) {
+        tree_it->current = list_it_next(tree_it->list);
+
+        return ret;
+    }
+
+    TreeNode* next_node = pop(tree_it);
+    push_left(tree_it, next_node->right);
+    tree_it->list = list_it_create(next_node->combos);
+    tree_it->current = list_it_next(tree_it->list);
+
+    return ret;
 }

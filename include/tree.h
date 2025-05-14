@@ -3,10 +3,8 @@
 #include <stdbool.h>
 #include "../include/combos.h"
 
-typedef struct TreeNode TreeNode;
 typedef struct Tree Tree;
 typedef struct TreeIt TreeIt;
-
 
 Tree* tree_create();
 void tree_insert(Tree* tree, Combo* c);

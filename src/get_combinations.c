@@ -21,7 +21,7 @@ void print_combo(int* program_blocks, int* block_size, int num_sizes) {
     printf("\tTotal Blocks Used: %d\n", used);
 }
 
-void generate_combos(int* block_size, int* block_amounts, int num_sizes, int program_size, int mem_used, int* program_blocks, int index) {
+void generate_combos(int* block_size, int* block_amounts, int num_sizes, int program_size, int mem_used, int* program_blocks, int index, Tree* tree) {
     if(index >= num_sizes)
         return;
 
@@ -33,7 +33,7 @@ void generate_combos(int* block_size, int* block_amounts, int num_sizes, int pro
     }
 
     if(mem_used == program_size) { // Combo found
-        print_combo(program_blocks, block_size, num_sizes);
+        tree_inset(tree, combo_create(program_blocks, block_size, num_sizes));
     } else if(mem_used < program_size) { // Ran out of blocks
         generate_combos(block_size, block_amounts, num_sizes, program_size, mem_used, program_blocks, index + 1);
     }
