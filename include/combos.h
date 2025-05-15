@@ -12,7 +12,7 @@ extern int* block_amounts;
 extern int num_sizes;
 
 Combo* combo_create(int* program_blocks, int* block);
-void print_combo(Combo* combo);
+void combo_print(int* program_blocks);
 void init_blocks(List* blocks);
 
 #endif

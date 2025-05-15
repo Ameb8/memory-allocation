@@ -8,6 +8,7 @@ typedef struct ListIt ListIt;
 
 List* list_create();
 void list_add(List* list, int* blocks);
+void list_increment(List* list, int* blocks);
 int list_size(List* list);
 void list_free(List *list);
 ListIt* list_it_create(List* list);

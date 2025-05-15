@@ -109,13 +109,15 @@ TreeIt* tree_it_create(Tree* tree) {
     TreeIt* tree_it = malloc(sizeof(TreeIt));
     tree_it->tree = tree;
 
-    TreeNode* stack[tree->height];
+    tree_it->stack = malloc(tree->height * sizeof(Tree*));
     tree_it->stack_size = 0;
     push_left(tree_it, tree->root);
 
     TreeNode* node = tree_it->stack[tree_it->stack_size--];
     tree_it->list = list_it_create(node->blocks);
     tree_it->current = list_it_next(tree_it->list);
+
+    return tree_it;
 }
 
 bool tree_it_has_next(TreeIt* tree_it) {

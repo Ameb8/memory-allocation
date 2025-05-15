@@ -3,18 +3,11 @@
 #include <limits.h>
 #include <errno.h>
 #include <ctype.h>
+#include <string.h>
 #include "../include/get_combinations.h"
 #include "../include/tree.h"
 #include"../include/list.h"
-
-void run(int block_size[], int block_amount[], int program_size) {
-    Tree* combos = get_combinations(program_size);
-    TreeIt* tree_it = tree_it_create(combos);
-
-    while(tree_it_has_next(tree_it)) {
-
-    }
-}
+#include "../test/test.h"
 
 void print_help() {
     printf("Exactly 1 command line argument must be passed to the program\n");
@@ -45,6 +38,30 @@ int parse_pos_int(char* str) {
     return (int)val;
 }
 
+int get_user_int(char* prompt) {
+    char input[100]; // Buffer to hold user input
+    int valid_input = INT_MIN;
+    
+    while(valid_input == INT_MIN) { // Loop until a valid positive int is entered
+        printf("%s", prompt);
+        fgets(input, sizeof(input), stdin); // Read user input
+        
+        // Remove any trailing newline character
+        input[strcspn(input, "\n")] = '\0';
+
+        if(!strcmp(input, "") || !strcmp(input, "exit"))
+            return INT_MIN;
+        
+        valid_input = parse_pos_int(input); // Parse the input
+        
+        if (valid_input == INT_MIN) {
+            printf("Invalid Input: Please enter a positive integer\n");
+        }
+    }
+
+    return valid_input;
+}
+
 int validate_args(int argc, char* argv[]) {
     if(argc != 1)
         print_help();
@@ -58,18 +75,18 @@ int validate_args(int argc, char* argv[]) {
 }
 
 int* get_block() {
-    int size = 0;
-    int amount = 0;
+    int size = get_user_int("Please enter the size of a free memory block: ");
+    
+    if(size == INT_MIN)
+        return NULL;
 
-    do { // Collect block size
-        printf("Please enter the size of the block in bytes (positive integer):\t");
-        size = parse_pos_int("");
-    } while(size < 1);
+    char prompt[100];
+    snprintf(prompt, sizeof(prompt), "Please enter the number of %d size blocks available: ", size);
 
-    do { // Collect amount
-        printf("Please enter the amount of %d byte blocks available (positive integer):\t", size);
-        amount = parse_pos_int("");
-    } while(amount < 1);
+    int amount = get_user_int(prompt);
+
+    if(amount == INT_MIN)
+        return NULL;
 
     int* vals = malloc(2 * sizeof(int));
     vals[0] = size;
@@ -82,15 +99,73 @@ void get_available_blocks() {
     List* blocks = list_create();
     int* block = NULL;
 
+    #ifdef DEBUG
+    if(!blocks)
+        printf("List is null!\n");
+    #endif
+
     do {
-        int* block = get_block();
-        list_add(blocks, block);
+        block = get_block();
+
+        #ifdef DEBUG
+        if(block) {
+            printf("\nBlock:\t %d x %d-byte blocks\n", block[1], block[0]);
+        }
+        #endif
+
+        if(block)
+            list_increment(blocks, block);
     } while(block != NULL);
 
+    #ifdef DEBUG
+    ListIt* test = list_it_create(blocks);
+    printf("\nList of blocks:\n");
+    while(list_it_has_next(test)) {
+        int* test_block = list_it_next(test);
+        printf("Block Size: %d\tBlock Amount: %d\n", test_block[0], test_block[1]);
+    }
+    #endif
+
     init_blocks(blocks);
+
+    #ifdef DEBUG
+    printf("\ninit_blocks completed:\n");
+    #endif
 }
 
+void run(int program_size) {
+    get_available_blocks();
+    Tree* combos = get_combinations(program_size);
+
+    #ifdef DEBUG
+    if(!combos)
+        printf("\nTree 'combos' is NULL\n");
+    else
+        printf("\nTree 'combos' created\n");
+    #endif
+
+    TreeIt* tree_it = tree_it_create(combos);
+
+    #ifdef DEBUG
+    if(!tree_it)
+        printf("\nTreeIt is NULL\n");
+    else
+        printf("\nTreeIt created\n");
+    #endif
+
+    while(tree_it_has_next(tree_it))
+        combo_print(tree_it_next(tree_it));
+
+
+}
+
+
 int main(int argc, char* argv[]) {
+    #ifdef TEST
+    run_tests();
+    return 0;
+    #endif
+    
     if(argc != 2)
         print_help();
 
@@ -99,10 +174,5 @@ int main(int argc, char* argv[]) {
     if(program_size == INT_MIN)
         print_help();
     
-
-
-    int block_size[] = {10, 7, 5, 4, 3, 1};
-    int block_amount[] = {1, 1, 2, 1, 1, 10};
-    //int program_size = 10;
-    get_combinations(program_size);
+    run(program_size);
 }

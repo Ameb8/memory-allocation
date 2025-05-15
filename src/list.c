@@ -29,6 +29,10 @@ void list_add(List* list, int* blocks) {
     if(!list) return;
     if(!blocks) return;
 
+    #ifdef DEBUG
+    printf("Adding new block: size=%d, amount=%d\n", blocks[0], blocks[1]);
+    #endif
+
     list->size++;
     ListNode* node = malloc(sizeof(ListNode));
     node->blocks = blocks;
@@ -44,10 +48,12 @@ void list_increment(List* list, int* blocks) {
     ListNode* temp = list->head;
 
     while(temp) {
-        if(temp->blocks[0] = blocks[0]) {
+        if(temp->blocks[0] == blocks[0]) {
             temp->blocks[1] += blocks[1];
             return;
         }
+
+        temp = temp->next;
     }
 
     list_add(list, blocks);
