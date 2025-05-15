@@ -12,4 +12,12 @@ TreeIt* tree_it_create(Tree* tree);
 bool tree_it_has_next(TreeIt* tree_it);
 int* tree_it_next(TreeIt* tree_it);
 
+#if defined(TEST) || defined(DEBUG)
+int tree_height(Tree* tree);
+void tree_print_level_order(Tree* tree);
+
+typedef struct TreeNode TreeNode;
+
+
+#endif
 #endif

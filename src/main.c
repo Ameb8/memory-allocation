@@ -142,6 +142,7 @@ void run(int program_size) {
         printf("\nTree 'combos' is NULL\n");
     else
         printf("\nTree 'combos' created\n");
+    printf("Tree Root: %d\n", combos->root->num_blocks);
     #endif
 
     TreeIt* tree_it = tree_it_create(combos);

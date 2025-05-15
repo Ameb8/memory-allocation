@@ -30,7 +30,7 @@ void list_add(List* list, int* blocks) {
     if(!blocks) return;
 
     #ifdef DEBUG
-    printf("Adding new block: size=%d, amount=%d\n", blocks[0], blocks[1]);
+    //printf("Adding new block: size=%d, amount=%d\n", blocks[0], blocks[1]);
     #endif
 
     list->size++;

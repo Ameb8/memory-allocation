@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "combos.h": "c",
-        "list.h": "c"
+        "list.h": "c",
+        "cstdlib": "c",
+        "variant": "c",
+        "chrono": "c"
     }
 }
