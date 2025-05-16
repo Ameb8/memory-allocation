@@ -98,7 +98,7 @@ int* get_block() {
 void get_available_blocks() {
     List* blocks = list_create();
     int* block = NULL;
-    
+
     do {
         block = get_block();
 
@@ -117,6 +117,11 @@ void run(int program_size) {
 
 
 int main(int argc, char* argv[]) {
+    #ifdef TEST
+    run_tests();
+    return 0;
+    #endif
+
     if(argc != 2)
         print_help();
 
@@ -126,4 +131,6 @@ int main(int argc, char* argv[]) {
         print_help();
     
     run(program_size);
+
+    return 0;
 }

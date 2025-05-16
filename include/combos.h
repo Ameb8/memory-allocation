@@ -15,4 +15,8 @@ Combo* combo_create(int* program_blocks, int* block);
 void combo_print(int* program_blocks);
 void init_blocks(List* blocks);
 
+#ifdef TEST
+int get_num_combos(int* program_blocks);
+#endif
+
 #endif

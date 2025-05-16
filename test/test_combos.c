@@ -1,8 +1,9 @@
-#ifdef test
+#ifdef TEST
 
 #include <stdio.h>
 #include "../include/combos.h"
 #include "test_util.h"
+#include "test_combos.h"
 
 /*
     int blocks[7][2] = {
@@ -44,9 +45,24 @@ void test_init() {
     }
 }
 
+void test_get_num_combos() {
+    int test_cases[3][7] = {
+        {1, 1, 1, 1, 1, 1, 1},
+        {3, 0, 0, 2, 4, 0, 0},
+        {2, 0, 1, 0, 2, 0, 3}
+    };
+
+    int exp_results[] = {192, 1, 144};
+
+    for(int i = 0; i < 3; i++)
+        ASSERT_INT_EQ(get_num_combos(test_cases[i]), exp_results[i]);
+}
+
 void test_combos() {
     test_init();
     end_sub_test("INIT");
+    test_get_num_combos();
+    end_sub_test("NUM COMBOS");
 }
 
 #endif

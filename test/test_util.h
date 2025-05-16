@@ -8,6 +8,7 @@ void test_results();
 void end_sub_test(char* test_name);
 void pass();
 void fail();
+void print_array(int* arr, int size, char* name);
  
 #define ASSERT_INT_EQ(actual, expected) do { \
     int _exp = (expected); \

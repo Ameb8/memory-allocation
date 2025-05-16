@@ -5,6 +5,7 @@
 #include "../include/combos.h"
 #include "../include/tree.h"
 
+#ifndef TEST
 typedef struct TreeNode TreeNode;
 
 typedef struct TreeNode {
@@ -30,18 +31,17 @@ typedef struct TreeIt {
     int stack_size;
 } TreeIt;
 
+#endif
+
 Tree* tree_create() {
     return calloc(1, sizeof(Tree));
 }
 
 
 TreeNode* node_create(int* blocks, int num_blocks) {
-    int* blocks_copy = malloc(num_sizes * sizeof(int));
-    memcpy(blocks_copy, blocks, num_sizes * sizeof(int));
-
     TreeNode* node = malloc(sizeof(TreeNode));
     node->blocks = list_create();
-    list_add(node->blocks, blocks_copy);
+    list_add(node->blocks, blocks);
     node->num_blocks = num_blocks;
     node->left = NULL;
     node->right = NULL;
@@ -84,16 +84,19 @@ void tree_insert(Tree* tree, int* blocks) {
     if(!tree || !blocks)
         return;
 
-    int num_blocks = get_num_blocks(blocks);
+    int* blocks_copy = malloc(num_sizes * sizeof(int));
+    memcpy(blocks_copy, blocks, num_sizes * sizeof(int));
+
+    int num_blocks = get_num_blocks(blocks_copy);
 
 
     if(tree->root == NULL) {
-        tree->root = node_create(blocks, num_blocks);
+        tree->root = node_create(blocks_copy, num_blocks);
         tree->height = 1;
         return;
     }
 
-    node_insert(tree->root, num_blocks, blocks, 1, &tree->height);
+    node_insert(tree->root, num_blocks, blocks_copy, 1, &tree->height);
 }
 
 
@@ -104,8 +107,9 @@ void print_node(TreeNode* node) {
 
     // Print all combos with current number of blocks
     ListIt* list_it = list_it_create(node->blocks);
+    printf("\n\n\033[1mAllocations With %d Blocks:\033[0m", node->num_blocks);
+
     while(list_it_has_next(list_it)) {
-        printf("\n\nAllocations With %d Blocks:\n", node->num_blocks);
         combo_print(list_it_next(list_it));
     }
     
@@ -117,6 +121,7 @@ void print_node(TreeNode* node) {
 // Print all combos in tree
 void tree_print(Tree* tree) {
     print_node(tree->root);
+    printf("\n\n");
 }
 
 

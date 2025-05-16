@@ -4,15 +4,6 @@
 #include "../include/get_combinations.h"
 #include "../include/combos.h"
 
-void print_arr(int* arr, char* name) {
-    printf("%s: ", name);
-    for(int i = 0; i < num_sizes; i++) {
-        printf("%d, ", arr[i]);
-    }
-
-    printf("\n");
-}
-
 
 void generate_combos(int program_size, int mem_used, int* program_blocks, int index, Tree* combos) {
     if(index >= num_sizes) // Index out of bounds

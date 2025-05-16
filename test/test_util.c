@@ -29,4 +29,12 @@ void fail() {
     pass();
 }
 
+void print_array(int* arr, int size, char* name) {
+    printf("%s: ", name);
+    for(int i = 0; i < size; i++) {
+        printf("%d, ", arr[i]);
+    }
+    printf("\n");
+}
+
 #endif

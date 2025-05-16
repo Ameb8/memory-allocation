@@ -46,6 +46,37 @@ void test_list() {
     free(it);
 }
 
+void test_node_vals(TreeNode* node, int exp_res_index[], int *index, int program_blocks[10][7]) {
+    if(node->left != NULL)
+        test_node_vals(node->left, exp_res_index, index, program_blocks);
+    
+    #ifdef DEBUG
+    printf("\nNum Blocks: %d\n", node->num_blocks);
+    #endif
+
+    // Compare Node values
+    ListIt* list_it = list_it_create(node->blocks);
+
+    while(list_it_has_next(list_it)) {
+        int* node_combos = list_it_next(list_it);
+
+        #ifdef DEBUG
+        print_array(node_combos, num_sizes, "Actual");
+        print_array(program_blocks[exp_res_index[*index]], num_sizes, "Expected");
+        #endif
+
+        for(int i = 0; i < 7; i++)
+            ASSERT_INT_EQ(node_combos[i], program_blocks[exp_res_index[*index]][i]);
+        
+        (*index)++;
+    }
+
+    //(*index)++;
+    
+    if(node->right != NULL)
+        test_node_vals(node->right, exp_res_index, index, program_blocks);
+}
+
 
 void test_tree() {
     // program block values for tree
@@ -94,20 +125,11 @@ void test_tree() {
         tree_insert(tree, program_blocks[i]);
         ASSERT_INT_EQ(tree_height(tree), tree_heights[i]);
     }
-        
-    TreeIt* tree_it = tree_it_create(tree);
+
     int exp_res_index[] = {2, 6, 8, 4, 0, 7, 5, 3, 1, 9};
     int index = 0;
 
-    while(tree_it_has_next(tree_it)) {
-        int* actual = tree_it_next(tree_it);
-
-        for(int i = 0; i < 7; i++) {// Test values in program_blocks
-            ASSERT_INT_EQ(actual[i], program_blocks[exp_res_index[index]][i]);
-        }
-
-        index++;
-    }   
+    test_node_vals(tree->root, exp_res_index, &index, program_blocks);
 }
 
 

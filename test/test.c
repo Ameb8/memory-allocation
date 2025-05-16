@@ -4,7 +4,7 @@
 #include "test_data_structs.h"
 #include "../include/combos.h"
 #include "../include/list.h"
-#include "test_combo.h"
+#include "test_combos.h"
 #include "test.h"
 
 void initialize_test() {

@@ -32,7 +32,7 @@ int factorial(int n) {
 }
 
 int get_num_combos(int* program_blocks) {
-    int num_combos = 0;
+    int num_combos = 1;
     
     for(int i = 0; i < num_sizes;i++) {
         if(program_blocks[i] > 0) {
@@ -44,7 +44,7 @@ int get_num_combos(int* program_blocks) {
             if(k == n)
                 continue;
             
-            num_combos += (factorial(n)) / (factorial(k) * factorial(n - k));
+            num_combos *= (factorial(n)) / (factorial(k) * factorial(n - k));
         }
     }
 
@@ -55,17 +55,17 @@ int get_num_combos(int* program_blocks) {
 void combo_print(int* program_blocks) {
     int num_possible = get_num_combos(program_blocks);
     int used = 0;
-    printf("\n\n%d possible combinations of:\n", num_possible);
+    printf("\n\nx%d Possible Combinations of:\n", num_possible);
 
     for(int i = 0; i < num_sizes; i++) {
         if(program_blocks[i] > 0) {
-            printf("%d %d byte blocks", program_blocks[i], block_sizes[i]);
+            printf("x%d %d-Byte Blocks", program_blocks[i], block_sizes[i]);
             used += program_blocks[i];
 
-            if(i < num_sizes - 1)
+            if(i < num_sizes - 2)
                 printf(", ");
         }
     }
 
-    printf("\tTotal Blocks Used: %d\n", used);
+    printf("\nTotal Blocks Used: %d\n", used);
 }
