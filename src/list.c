@@ -63,6 +63,7 @@ int list_size(List* list) {
     return list->size;
 }
 
+
 void list_free(List *list) {
     if(!list) return;
 

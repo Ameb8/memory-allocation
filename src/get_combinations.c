@@ -4,31 +4,18 @@
 #include "../include/get_combinations.h"
 #include "../include/combos.h"
 
-void print_combo(int* program_blocks, int* block_size, int num_sizes) {
-    printf("Memory usage:\t");
-    int used = 0;
-    
+void print_arr(int* arr, char* name) {
+    printf("%s: ", name);
     for(int i = 0; i < num_sizes; i++) {
-        if(program_blocks[i] > 0) {
-            printf("%d %d byte blocks", program_blocks[i], block_size[i]);
-            used += program_blocks[i];
-
-            if(i < num_sizes - 1)
-                printf(", ");
-        }
+        printf("%d, ", arr[i]);
     }
 
-    printf("\tTotal Blocks Used: %d\n", used);
+    printf("\n");
 }
 
-/*
-extern int* block_sizes;
-extern int* block_amounts;
-extern int num_sizes;
-*/
 
 void generate_combos(int program_size, int mem_used, int* program_blocks, int index, Tree* combos) {
-    if(index >= num_sizes)
+    if(index >= num_sizes) // Index out of bounds
         return;
 
     // Add current block until run out or size limit reached/exceeded
@@ -38,11 +25,10 @@ void generate_combos(int program_size, int mem_used, int* program_blocks, int in
         program_blocks[index] += 1;
     }
 
-    if(mem_used == program_size) { // Combo found
+    if(mem_used == program_size) // Combo found
         tree_insert(combos, program_blocks);
-    } else if(mem_used < program_size) { // Ran out of blocks
+    else if(mem_used < program_size) // Ran out of blocks
         generate_combos(program_size, mem_used, program_blocks, index + 1, combos);
-    }
 
     while(program_blocks[index] > 0) { // Decrement current block amount used and continue search
         mem_used -= block_sizes[index];
@@ -52,11 +38,11 @@ void generate_combos(int program_size, int mem_used, int* program_blocks, int in
     }
 }
 
+
 // block_size and block_amounts must be sorted in descending order by block size
 Tree* get_combinations(int program_size) {
     int* used_blocks = calloc(num_sizes, sizeof(int));
     Tree* combos = tree_create();
-
     generate_combos(program_size, 0, used_blocks, 0, combos);
 
     return combos;

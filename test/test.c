@@ -4,6 +4,7 @@
 #include "test_data_structs.h"
 #include "../include/combos.h"
 #include "../include/list.h"
+#include "test_combo.h"
 #include "test.h"
 
 void initialize_test() {
@@ -32,6 +33,7 @@ void run_tests() {
     initialize_test();
 
     test_data_structs();
+    test_combos();
     test_results();
 }
 

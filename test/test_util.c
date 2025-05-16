@@ -1,6 +1,7 @@
 #ifdef TEST
 
 #include "test_util.h"
+#include "../include/combos.h"
 
 int num_tests = 0;
 int num_failed = 0;

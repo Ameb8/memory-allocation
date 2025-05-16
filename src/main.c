@@ -98,75 +98,25 @@ int* get_block() {
 void get_available_blocks() {
     List* blocks = list_create();
     int* block = NULL;
-
-    #ifdef DEBUG
-    if(!blocks)
-        printf("List is null!\n");
-    #endif
-
+    
     do {
         block = get_block();
-
-        #ifdef DEBUG
-        if(block) {
-            printf("\nBlock:\t %d x %d-byte blocks\n", block[1], block[0]);
-        }
-        #endif
 
         if(block)
             list_increment(blocks, block);
     } while(block != NULL);
 
-    #ifdef DEBUG
-    ListIt* test = list_it_create(blocks);
-    printf("\nList of blocks:\n");
-    while(list_it_has_next(test)) {
-        int* test_block = list_it_next(test);
-        printf("Block Size: %d\tBlock Amount: %d\n", test_block[0], test_block[1]);
-    }
-    #endif
-
     init_blocks(blocks);
-
-    #ifdef DEBUG
-    printf("\ninit_blocks completed:\n");
-    #endif
 }
 
 void run(int program_size) {
     get_available_blocks();
     Tree* combos = get_combinations(program_size);
-
-    #ifdef DEBUG
-    if(!combos)
-        printf("\nTree 'combos' is NULL\n");
-    else
-        printf("\nTree 'combos' created\n");
-    printf("Tree Root: %d\n", combos->root->num_blocks);
-    #endif
-
-    TreeIt* tree_it = tree_it_create(combos);
-
-    #ifdef DEBUG
-    if(!tree_it)
-        printf("\nTreeIt is NULL\n");
-    else
-        printf("\nTreeIt created\n");
-    #endif
-
-    while(tree_it_has_next(tree_it))
-        combo_print(tree_it_next(tree_it));
-
-
+    tree_print(combos);
 }
 
 
 int main(int argc, char* argv[]) {
-    #ifdef TEST
-    run_tests();
-    return 0;
-    #endif
-    
     if(argc != 2)
         print_help();
 

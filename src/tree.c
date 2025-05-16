@@ -34,6 +34,7 @@ Tree* tree_create() {
     return calloc(1, sizeof(Tree));
 }
 
+
 TreeNode* node_create(int* blocks, int num_blocks) {
     int* blocks_copy = malloc(num_sizes * sizeof(int));
     memcpy(blocks_copy, blocks, num_sizes * sizeof(int));
@@ -47,6 +48,7 @@ TreeNode* node_create(int* blocks, int num_blocks) {
 
     return node;
 }
+
 
 int get_num_blocks(int* blocks) {
     int num_blocks = 0;
@@ -77,6 +79,7 @@ void node_insert(TreeNode* node, int num_blocks, int* blocks, int height, int* m
     }
 }
 
+
 void tree_insert(Tree* tree, int* blocks) {
     if(!tree || !blocks)
         return;
@@ -94,112 +97,35 @@ void tree_insert(Tree* tree, int* blocks) {
 }
 
 
-TreeNode* pop(TreeIt* tree_it) {
-    if(!tree_it || tree_it->stack_size < 0)
-        return NULL;
+// Recursively print all elements in tree
+void print_node(TreeNode* node) {
+    if(node->left) // Print combos with fewer blocks
+        print_node(node->left);
 
-    return tree_it->stack[tree_it->stack_size--];
+    // Print all combos with current number of blocks
+    ListIt* list_it = list_it_create(node->blocks);
+    while(list_it_has_next(list_it)) {
+        printf("\n\nAllocations With %d Blocks:\n", node->num_blocks);
+        combo_print(list_it_next(list_it));
+    }
+    
+    if(node->right) // Print combos with more blocks
+        print_node(node->right);
 }
 
 
-void push_left(TreeIt* tree_it, TreeNode* node) {
-    TreeNode* temp = node;
-
-    while (temp) {
-        tree_it->stack[tree_it->stack_size++] = temp;
-        temp = temp->left;
-    }
-}
-
-
-TreeIt* tree_it_create(Tree* tree) {
-    if (!tree || !tree->root) return NULL;
-
-    TreeIt* tree_it = malloc(sizeof(TreeIt));
-    if (!tree_it) return NULL;
-
-    tree_it->tree = tree;
-    tree_it->stack = malloc(tree->height * sizeof(TreeNode*));
-    if (!tree_it->stack) {
-        free(tree_it);
-        return NULL;
-    }
-
-    tree_it->stack_size = 0;
-
-    // Push leftmost path from root onto the stack
-    push_left(tree_it, tree->root);
-
-    // If the tree is empty or push_left failed
-    if (tree_it->stack_size == 0) {
-        free(tree_it->stack);
-        free(tree_it);
-        return NULL;
-    }
-
-    // Pop the first node to start the iterator
-    TreeNode* node = pop(tree_it);
-    if (!node || !node->blocks) {
-        free(tree_it->stack);
-        free(tree_it);
-        return NULL;
-    }
-
-    // Initialize list iterator
-    tree_it->list = list_it_create(node->blocks);
-    if (!tree_it->list) {
-        free(tree_it->stack);
-        free(tree_it);
-        return NULL;
-    }
-
-    tree_it->current = list_it_next(tree_it->list);
-
-    // Push right child of the popped node
-    push_left(tree_it, node->right);
-
-    return tree_it;
-}
-
-
-bool tree_it_has_next(TreeIt* tree_it) {
-    if(!tree_it || !tree_it->current)
-        return false;
-
-    return true;
-}
-
-
-int* tree_it_next(TreeIt* tree_it) {
-    if (!tree_it || !tree_it->current) return NULL;
-
-    int* ret = tree_it->current;
-
-    if (list_it_has_next(tree_it->list)) {
-        tree_it->current = list_it_next(tree_it->list);
-        return ret;
-    }
-
-    // Move to next node in the stack
-    while (tree_it->stack_size > 0) {
-        TreeNode* next_node = pop(tree_it);
-        push_left(tree_it, next_node->right);
-
-        if (next_node->blocks) {
-            //list_it_destroy(tree_it->list);  // Free previous list
-            tree_it->list = list_it_create(next_node->blocks);
-            tree_it->current = list_it_next(tree_it->list);
-            if (tree_it->current)
-                return ret;
-        }
-    }
-
-    tree_it->current = NULL;
-    return ret;
+// Print all combos in tree
+void tree_print(Tree* tree) {
+    print_node(tree->root);
 }
 
 
 #ifdef TEST
+
+int get_root(Tree* tree) {
+    return tree->root->num_blocks;
+}
+
 int tree_height(Tree* tree) {
     return tree->height;
 }

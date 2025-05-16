@@ -18,7 +18,7 @@ void init_blocks(List* blocks) {
     while(list_it_has_next(list_it)) {
         int* vals = list_it_next(list_it);
         block_sizes[i] = vals[0];
-        block_amounts[i] = vals[1];
+        block_amounts[i++] = vals[1];
     }
 }
 
@@ -32,7 +32,7 @@ int factorial(int n) {
 }
 
 int get_num_combos(int* program_blocks) {
-    int num_combos = 1;
+    int num_combos = 0;
     
     for(int i = 0; i < num_sizes;i++) {
         if(program_blocks[i] > 0) {
