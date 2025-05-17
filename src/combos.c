@@ -22,6 +22,7 @@ void init_blocks(List* blocks) {
     }
 }
 
+/*
 int factorial(int n) {
     int result = 1;
 
@@ -45,6 +46,42 @@ int get_num_combos(int* program_blocks) {
                 continue;
             
             num_combos *= (factorial(n)) / (factorial(k) * factorial(n - k));
+        }
+    }
+
+    return num_combos;
+}
+*/
+
+unsigned long long binomial_coefficient(int n, int k) {
+    if (k > n) return 0;
+    if (k == 0 || k == n) return 1;
+
+    if (k > n - k)
+        k = n - k;
+
+    unsigned long long result = 1;
+    for (int i = 1; i <= k; ++i) {
+        result *= (n - k + i);
+        result /= i;
+    }
+
+    return result;
+}
+
+
+unsigned long long get_num_combos(int* program_blocks) {
+    unsigned long long num_combos = 1;
+
+    for (int i = 0; i < num_sizes; i++) {
+        int n = block_amounts[i];
+        int k = program_blocks[i];
+
+        if (k > 0) {
+            if (k > n)
+                return 0;
+
+            num_combos *= binomial_coefficient(n, k);
         }
     }
 

@@ -9,6 +9,8 @@
 #include"../include/list.h"
 #include "../test/test.h"
 
+
+// Provide message and exits program when input arguments are invald
 void print_help() {
     printf("Exactly 1 command line argument must be passed to the program\n");
     printf("Please run again, passing the size of the program in bytes as argument\n");
@@ -16,6 +18,8 @@ void print_help() {
     exit(0);
 }
 
+
+// Converts string to positive integer, returns INT_MIN if invalid
 int parse_pos_int(char* str) {
     if (str == NULL || *str == '\0') return INT_MIN;
 
@@ -38,6 +42,8 @@ int parse_pos_int(char* str) {
     return (int)val;
 }
 
+
+// Prompt user to input integer and attempt to parse
 int get_user_int(char* prompt) {
     char input[100]; // Buffer to hold user input
     int valid_input = INT_MIN;
@@ -50,18 +56,19 @@ int get_user_int(char* prompt) {
         input[strcspn(input, "\n")] = '\0';
 
         if(!strcmp(input, "") || !strcmp(input, "exit"))
-            return INT_MIN;
+            return INT_MIN; // Abort input collection
         
         valid_input = parse_pos_int(input); // Parse the input
         
-        if (valid_input == INT_MIN) {
+        if(valid_input == INT_MIN) // Re-prompt user
             printf("Invalid Input: Please enter a positive integer\n");
-        }
     }
 
     return valid_input;
 }
 
+
+// Validate input arguments are valid and convert to integer
 int validate_args(int argc, char* argv[]) {
     if(argc != 1)
         print_help();
@@ -74,14 +81,16 @@ int validate_args(int argc, char* argv[]) {
     return program_size;
 }
 
+
+// Get a block size and amount from user
 int* get_block() {
-    int size = get_user_int("Please enter the size of a free memory block: ");
+    int size = get_user_int("Please enter the size (Bytes) of a free memory block: ");
     
     if(size == INT_MIN)
         return NULL;
 
     char prompt[100];
-    snprintf(prompt, sizeof(prompt), "Please enter the number of %d size blocks available: ", size);
+    snprintf(prompt, sizeof(prompt), "Please enter the number of %d-Byte blocks available: ", size);
 
     int amount = get_user_int(prompt);
 
@@ -95,6 +104,8 @@ int* get_block() {
     return vals;
 }
 
+
+// Get blocks from user
 void get_available_blocks() {
     List* blocks = list_create();
     int* block = NULL;
@@ -109,10 +120,12 @@ void get_available_blocks() {
     init_blocks(blocks);
 }
 
+
+// Run program
 void run(int program_size) {
-    get_available_blocks();
-    Tree* combos = get_combinations(program_size);
-    tree_print(combos);
+    get_available_blocks(); // Collect block sizes and amount
+    Tree* combos = get_combinations(program_size); // Get combinations
+    tree_print(combos); // Print combinations
 }
 
 
