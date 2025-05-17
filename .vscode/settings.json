@@ -4,6 +4,10 @@
         "list.h": "c",
         "cstdlib": "c",
         "variant": "c",
-        "chrono": "c"
+        "chrono": "c",
+        "big_int": "c",
+        "__locale": "c",
+        "functional": "c",
+        "test_util.h": "c"
     }
 }

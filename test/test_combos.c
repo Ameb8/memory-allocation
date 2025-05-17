@@ -4,6 +4,7 @@
 #include "../include/combos.h"
 #include "test_util.h"
 #include "test_combos.h"
+#include "../include/big_int.h"
 
 /*
     int blocks[7][2] = {
@@ -55,7 +56,7 @@ void test_get_num_combos() {
     int exp_results[] = {192, 1, 144};
 
     for(int i = 0; i < 3; i++)
-        ASSERT_INT_EQ(get_num_combos(test_cases[i]), exp_results[i]);
+        ASSERT_INT_EQ(get_num_combos(test_cases[i], block_amounts, num_sizes), exp_results[i]);
 }
 
 void test_combos() {

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "../include/combos.h"
+#include "../include/big_int.h"
 
 int* block_sizes = NULL;
 int* block_amounts = NULL;
@@ -22,77 +23,14 @@ void init_blocks(List* blocks) {
     }
 }
 
-/*
-int factorial(int n) {
-    int result = 1;
-
-    for(int i = 2; i <= n; i++)
-        result *= i;
-
-    return result;
-}
-
-int get_num_combos(int* program_blocks) {
-    int num_combos = 1;
-    
-    for(int i = 0; i < num_sizes;i++) {
-        if(program_blocks[i] > 0) {
-            int n = block_amounts[i];
-            int k = program_blocks[i];
-
-            if(k > n)
-                return 0;
-            if(k == n)
-                continue;
-            
-            num_combos *= (factorial(n)) / (factorial(k) * factorial(n - k));
-        }
-    }
-
-    return num_combos;
-}
-*/
-
-unsigned long long binomial_coefficient(int n, int k) {
-    if (k > n) return 0;
-    if (k == 0 || k == n) return 1;
-
-    if (k > n - k)
-        k = n - k;
-
-    unsigned long long result = 1;
-    for (int i = 1; i <= k; ++i) {
-        result *= (n - k + i);
-        result /= i;
-    }
-
-    return result;
-}
-
-
-unsigned long long get_num_combos(int* program_blocks) {
-    unsigned long long num_combos = 1;
-
-    for (int i = 0; i < num_sizes; i++) {
-        int n = block_amounts[i];
-        int k = program_blocks[i];
-
-        if (k > 0) {
-            if (k > n)
-                return 0;
-
-            num_combos *= binomial_coefficient(n, k);
-        }
-    }
-
-    return num_combos;
-}
-
 
 void combo_print(int* program_blocks) {
-    int num_possible = get_num_combos(program_blocks);
+    BigInt* num_possible = get_num_combos(program_blocks, block_amounts, num_sizes);
     int used = 0;
-    printf("\n\nx%d Possible Combinations of:\n", num_possible);
+
+    printf("\n\n");
+    bigint_print(num_possible);
+    printf(" Possible Combinations of:\n");
 
     for(int i = 0; i < num_sizes; i++) {
         if(program_blocks[i] > 0) {
