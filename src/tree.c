@@ -33,11 +33,14 @@ typedef struct TreeIt {
 
 #endif
 
+
+// Instantiates tree struct
 Tree* tree_create() {
     return calloc(1, sizeof(Tree));
 }
 
 
+// Instantiates node with given blocks and num_blocks
 TreeNode* node_create(int* blocks, int num_blocks) {
     TreeNode* node = malloc(sizeof(TreeNode));
     node->blocks = list_create();
@@ -50,6 +53,7 @@ TreeNode* node_create(int* blocks, int num_blocks) {
 }
 
 
+// Determined the total number of blocks used
 int get_num_blocks(int* blocks) {
     int num_blocks = 0;
     for(int i = 0; i < num_sizes; i++)
@@ -59,6 +63,7 @@ int get_num_blocks(int* blocks) {
 }
 
 
+// Inserts value in correct position in tree
 void node_insert(TreeNode* node, int num_blocks, int* blocks, int height, int* max_height) {
     if(num_blocks < node->num_blocks) { // Search left subtree
         if(!node->left) { // Insert location found
@@ -80,22 +85,24 @@ void node_insert(TreeNode* node, int num_blocks, int* blocks, int height, int* m
 }
 
 
+// Insert combo in tree
 void tree_insert(Tree* tree, int* blocks) {
     if(!tree || !blocks)
-        return;
+        return; // Tree or blocks null, return
 
+    // Copy memory allocation
     int* blocks_copy = malloc(num_sizes * sizeof(int));
     memcpy(blocks_copy, blocks, num_sizes * sizeof(int));
+    int num_blocks = get_num_blocks(blocks_copy); // Get number of blocks in allocation
 
-    int num_blocks = get_num_blocks(blocks_copy);
-
-
-    if(tree->root == NULL) {
+    // Root node is null
+    if(tree->root == NULL) { // Set allocation as root node
         tree->root = node_create(blocks_copy, num_blocks);
         tree->height = 1;
         return;
     }
 
+    // Recursively find correct insert position for allocation
     node_insert(tree->root, num_blocks, blocks_copy, 1, &tree->height);
 }
 
@@ -106,12 +113,11 @@ void print_node(TreeNode* node) {
         print_node(node->left);
 
     // Print all combos with current number of blocks
-    ListIt* list_it = list_it_create(node->blocks);
-    printf("\n\n\033[1mAllocations With %d Blocks:\033[0m", node->num_blocks);
+    ListIt* list_it = list_it_create(node->blocks); // Get list of allocations with node's number of blocks
+    printf("\n\n\033[1;4;31mAllocations With %d Blocks:\033[0m", node->num_blocks); // Print block number in allocations in red bold
 
-    while(list_it_has_next(list_it)) {
-        combo_print(list_it_next(list_it));
-    }
+    while(list_it_has_next(list_it))
+        combo_print(list_it_next(list_it)); // Print combination
     
     if(node->right) // Print combos with more blocks
         print_node(node->right);
@@ -120,7 +126,10 @@ void print_node(TreeNode* node) {
 
 // Print all combos in tree
 void tree_print(Tree* tree) {
-    print_node(tree->root);
+    if(!tree->root) // Tree is empty
+        printf("\nNo valid memory allocations are possible to fulfill program requirements\n\n");
+
+    print_node(tree->root); // Print all nodes recursively
     printf("\n\n");
 }
 

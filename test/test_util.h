@@ -3,6 +3,7 @@
 #define TEST_UTIL_H
 
 #include <stdio.h>
+#include <string.h>
 
 void test_results();
 void end_sub_test(char* test_name);
@@ -19,6 +20,18 @@ void print_array(int* arr, int size, char* name);
              __func__, #actual, #expected, __FILE__, __LINE__, _act, _exp); \
     } else { \
         pass(); \
+    } \
+} while(0)
+
+#define ASSERT_STR_EQ(actual, expected) do { \
+    pass(); \
+    if((actual) == NULL || (expected) == NULL || strcmp((actual), (expected)) != 0) { \
+        fail(); \
+        printf("FAILED in %s: %s != %s (%s != %s) at %s:%d\n", \
+            __func__, #actual, #expected, \
+            (actual) ? (actual) : "NULL", \
+            (expected) ? (expected) : "NULL", \
+            __FILE__, __LINE__); \
     } \
 } while(0)
 

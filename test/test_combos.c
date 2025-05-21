@@ -46,6 +46,28 @@ void test_init() {
     }
 }
 
+void test_get_num_combos_large() {
+    int blck_amounts[] = {
+        10000, 2000, 3000, 400, 150000
+    };
+    int sizes = 5;
+
+    int test_cases[3][5] = {
+        {20, 620, 12, 3, 9},
+        {10, 5, 35, 400, 20},
+        {10, 0, 0, 1, 50}
+    };
+
+    char* exp_results[] = {
+        "1.9229e190", "3.9425e214", "2.2818e230"
+    };
+
+    for(int i = 0; i < 3; i++) {
+        ASSERT_STR_EQ(bigint_to_sci(get_num_combos(test_cases[i], blck_amounts, sizes)), exp_results[i]);
+    }
+}
+
+
 void test_get_num_combos() {
     int test_cases[3][7] = {
         {1, 1, 1, 1, 1, 1, 1},
@@ -53,10 +75,12 @@ void test_get_num_combos() {
         {2, 0, 1, 0, 2, 0, 3}
     };
 
-    int exp_results[] = {192, 1, 144};
+    char* exp_results[] = {"192", "1", "144"};
 
     for(int i = 0; i < 3; i++)
-        ASSERT_INT_EQ(get_num_combos(test_cases[i], block_amounts, num_sizes), exp_results[i]);
+        ASSERT_STR_EQ(bigint_to_string(get_num_combos(test_cases[i], block_amounts, num_sizes)), exp_results[i]);
+    
+    test_get_num_combos_large();
 }
 
 void test_combos() {
